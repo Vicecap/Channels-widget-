@@ -1,155 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Channels Widget</title>
 
-<!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
-<style>
-.channel-widget-container {
-  all: initial;
-  * {
-    all: unset;
-  }
-  font-family: Arial, sans-serif;
-  display: block;
-}
+    .channel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      padding: 10px;
+    }
 
-.channel-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 15px;
-  padding: 10px;
-}
+    .channel-item {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+      position: relative;
+    }
 
-.channel-item {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  padding: 15px 10px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-  position: relative;
-}
+    .channel-item:hover {
+      transform: scale(1.05);
+    }
 
-.channel-item:hover {
-  transform: scale(1.05);
-}
+    .channel-icon {
+      font-size: 36px;
+      margin-bottom: 8px;
+    }
 
-.channel-icon {
-  font-size: 36px;
-  margin-bottom: 8px;
-}
+    .channel-name {
+      color: #007BFF;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
 
-.channel-name {
-  color: #007BFF;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
+    .live-status {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 9px;
+      padding: 3px 8px 3px 20px;
+      border-radius: 50px;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: default;
+    }
 
-.live-status {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 9px;
-  padding: 3px 8px 3px 20px;
-  border-radius: 50px;
-  color: white;
-  font-weight: bold;
-  border: none;
-  cursor: default;
-  transition: background-color 0.3s ease;
-  overflow: hidden;
-}
+    .live {
+      background-color: #28a745;
+    }
 
-.live {
-  background-color: #28a745;
-}
+    .offline {
+      background-color: #dc3545;
+    }
 
-.offline {
-  background-color: #dc3545;
-}
+    .live-status::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
 
-.live-status::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  background-color: white;
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-  opacity: 0.8;
-}
+    .offline.live-status::before {
+      animation: none;
+      opacity: 0.5;
+    }
 
-.offline.live-status::before {
-  background-color: white;
-  animation: none;
-  opacity: 0.5;
-}
+    @keyframes pulse {
+      0% { transform: translateY(-50%) scale(1); opacity: 1; }
+      50% { transform: translateY(-50%) scale(1.5); opacity: 0.5; }
+      100% { transform: translateY(-50%) scale(1); opacity: 1; }
+    }
 
-@keyframes pulse {
-  0% {
-    transform: translateY(-50%) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-50%) scale(1.5);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateY(-50%) scale(1);
-    opacity: 1;
-  }
-}
+    .server-button {
+      font-size: 11px;
+      padding: 3px 10px;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      text-decoration: none;
+      margin: 3px 2px;
+      display: inline-block;
+      min-width: 70px;
+      height: 24px;
+      line-height: 18px;
+    }
 
-.server-button {
-  font-size: 11px;
-  padding: 3px 10px;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  margin: 3px 2px;
-  min-width: 70px;
-  height: 24px;
-  line-height: 18px;
-}
+    .server-button.purple {
+      background-color: #6f42c1;
+    }
 
-.server-button.purple {
-  background-color: #6f42c1;
-}
+    .server-button.purple:hover {
+      background-color: #5936a2;
+    }
 
-.server-button.purple:hover {
-  background-color: #5936a2;
-}
+    .server-button.blue {
+      background-color: #007bff;
+    }
 
-.server-button.blue {
-  background-color: #007bff;
-}
-
-.server-button.blue:hover {
-  background-color: #0056b3;
-}
-</style>
-
-<div class="channel-widget-container">
+    .server-button.blue:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
   <div class="channel-grid">
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-tv channel-icon" style="color:#d71920;"></i><div class="channel-name">TNT Sports 1</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt1" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt1" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-tv channel-icon" style="color:#b71c1c;"></i><div class="channel-name">TNT Sports 2</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt2" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt2" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-tv channel-icon" style="color:#880e4f;"></i><div class="channel-name">TNT Sports 3</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt3" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt3" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-tv channel-icon" style="color:#6a1b9a;"></i><div class="channel-name">TNT Sports 4</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt4" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tnt4" class="server-button blue">Server 2</a></div>
+
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-futbol channel-icon" style="color:#5f259f;"></i><div class="channel-name">beIN Sports 1</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein1" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein1" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-futbol channel-icon" style="color:#7b1fa2;"></i><div class="channel-name">beIN Sports 2</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein2" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein2" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-futbol channel-icon" style="color:#9c27b0;"></i><div class="channel-name">beIN Sports 3</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein3" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein3" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-futbol channel-icon" style="color:#ba68c8;"></i><div class="channel-name">beIN Sports 4</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein4" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=bein4" class="server-button blue">Server 2</a></div>
+
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-trophy channel-icon" style="color:#00bcd4;"></i><div class="channel-name">Movistar CL</div><a href="https://live.totalsports.site/p/streams.html?id=mstarcl" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=mstarcl" class="server-button blue">Server 2</a></div>
-    <div class="channel-item"><button class="live-status offline">OFFLINE</button><i class="fas fa-trophy channel-icon" style="color:#0097a7;"></i><div class="channel-name">Movistar LaLiga</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=mstarlaliga" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=ssll" class="server-button blue">Server 2</a></div>
+    <div class="channel-item"><button class="live-status offline">OFFLINE</button><i class="fas fa-trophy channel-icon" style="color:#0097a7;"></i><div class="channel-name">Movistar laliga</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=mstarlaliga" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=ssll" class="server-button blue">Server 2</a></div>
+
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-trophy channel-icon" style="color:#2e7d32;"></i><div class="channel-name">SuperSport PL</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=sspl" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=sspl" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-broadcast-tower channel-icon" style="color:#1e88e5;"></i><div class="channel-name">USA Network</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=usanetwork" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=usanetwork" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-broadcast-tower channel-icon" style="color:#0288d1;"></i><div class="channel-name">SSC1</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=afc" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=afc" class="server-button blue">Server 2</a></div>
     <div class="channel-item"><button class="live-status live">LIVE</button><i class="fas fa-bolt channel-icon" style="color:#ff9800;"></i><div class="channel-name">TUDN Sports</div><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tudn" class="server-button purple">Server 1</a><a href="https://totalstreamss.blogspot.com/p/live_3.html?id=tudn" class="server-button blue">Server 2</a></div>
   </div>
-</div>
+</body>
+</html>
